@@ -30,6 +30,10 @@ namespace BulkyBookWeb.Controllers
         [ValidateAntiForgeryToken] //this is for security porpuses
         public IActionResult Create(Category obj)
         {
+            if (obj.Name == obj.DisplayOrder.ToString())
+            {
+                ModelState.AddModelError("DifferenciateError", "The Display Order Can Not Exactly Match The Name");
+            }
             if (ModelState.IsValid)
             {
                 _db.Categories.Add(obj);
