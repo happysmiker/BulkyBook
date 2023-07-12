@@ -44,5 +44,43 @@ namespace BulkyBookWeb.Controllers
             return View(obj);
             
         }
+
+        public IActionResult Edit(int? id)
+        {
+            if (id == 0 || id == null)
+            {
+                return NotFound();
+            }
+            var CategoryFromDb = _db.Categories.Find(id);
+            //var CategoryFromDbFirst = _db.Categories.SingleOrDefault(c => c.Id == id);
+
+            //var CategoryFromDbSingle = _db.Categories.FirstOrDefault(u => u.Id == id);
+
+            if (CategoryFromDb == null)
+            {
+                return NotFound();
+            }
+
+            return View(CategoryFromDb);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] //this is for security porpuses
+        public IActionResult Edit(Category obj)
+        {
+            if (obj.Name == obj.DisplayOrder.ToString())
+            {
+                ModelState.AddModelError("DifferenciateError", "The Display Order Can Not Exactly Match The Name");
+            }
+            if (ModelState.IsValid)
+            {
+                _db.Categories.Add(obj);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+
+            }
+            return View(obj);
+
+        }
     }
 }
